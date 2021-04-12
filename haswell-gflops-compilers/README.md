@@ -11,7 +11,7 @@ make
 
 ## En que consiste
 
-Corremos ./headless para distintos tamaños de N: 64, 128, 256 midiendo GFLOPS. Lo hacemos para ambos compiladores, gcc y clang usando solo el flag de -O3. El resultado se guarda en una tabla.
+Corremos ./headless para distintos tamaños de N: 64, 128, 256 midiendo GFLOPS. Lo hacemos para ambos compiladores, gcc y clang usando solo el flag de -O3 y -march=haswell. El resultado se guarda en una tabla.
 Para GFLOPS, en la arquitectura Haswell utilizamos:
 `GLOPS= (µops ejecutadas en puerto 0 y puerto 1) / segundos`
 Más info de la obtención de esta métrica en [haswell-looking-for-a-metric](../haswell-looking-for-a-metric)
