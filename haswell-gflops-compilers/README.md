@@ -1,4 +1,4 @@
-# Haswell Buscando una metrica
+# Haswell Comparando GFLOPS entre Compiladores
 En este experimento comparamos la performance de GCC y Clang (en distintas versionas) para distintos tamaños de N con -O3 y -march=haswell.
 
 ## Como correrlo
