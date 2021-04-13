@@ -19,20 +19,26 @@ De ser falsa, es injusto comparar la performance mediante GFLOPS, ya que
 mayor GFLOPS no implica menor wall time.
 
 Como contra ejemplo a la hipótesis, probamos ejecutando headless para N=128, con -O3 -march=haswell vs -O0. Obteniendo los siguientes resultados:
-|compilation|GFLOPS|Time(sec)|
-|-O3 -march=haswell|2.38|2.48
-|-O0 |0.95|1.67
 
-|Compilation|GFLOP|GFLOPS|Time(Sec)|
+|Compilación|GFLOP|GFLOPS|Time(Sec)|
 |-----------|-----|------|---------|
 |-O0|90.32|2.21|40.82|
 |-O3 -march=haswell|26.22|0.88|29.80|
 
-HO es Falsa, la versión optimizada hace tres veces menos GFLOPS que la no optimizada.
+HO es Falsa, la versión optimizada hace tres veces menos GFLOP que la no optimizada.
 Además resulta que la optimizada tarda 11 segundos menos.
 
+### Por qué la versión optimizada hace menos GFLOP?
+La hipótesis que queda a validar es que se hacen menos GFLOP por que el compilador está vectorizando las operaciones de punto flotante.
+Con lo cuál realiza menos GFLOP en total.
+
+|Compilación|Cantidad de operacions vmulss (AVX) en el assembly|
+|-----------|-----------------------------------|
+|-O0|0|
+|-O3 -march=haswell| 131|
+
 ## FAQ
-# Cómo calculamos GFLOP?
+### Cómo calculamos GFLOP?
 `GFLOPS = (µops ejecutadas en puerto 0 y puerto 1) / segundos`
 Más detalle en ['haswell-looking-for-gflop']('../haswell-looking-for-gflop')
 
