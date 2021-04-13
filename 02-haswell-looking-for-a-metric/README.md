@@ -9,7 +9,8 @@ make
 ```
 
 ## Desarrollo
-Idea: Si utilizamos gflops como métrica de perfomance. Podemos penalizar más a un programa que tenga menos operaciones por segundo, pero dure menos tiempo de pared por que resuelve el problema en menos operaciones.
+### Sirve GFLOPS?
+Si utilizamos gflops como métrica de perfomance. Podemos penalizar más a un programa que tenga menos operaciones por segundo, pero dure menos tiempo de pared por que resuelve el problema en menos operaciones.
 
 Hipotesis H0: Dado un tamaño de problema N, la cantidad de operaciones punto flotante para resolver headless es fija.
 
@@ -28,7 +29,9 @@ Como contra ejemplo a la hipótesis, probamos ejecutando headless para N=128, co
 HO es Falsa, la versión optimizada hace tres veces menos GFLOP que la no optimizada.
 Además resulta que la optimizada tarda 11 segundos menos.
 
-### Por qué la versión optimizada hace menos GFLOP?
+Entonces GFLOPS no sirve para comparar 2 soluciones entre sí. Pero puede darnos una idea de cuánto se está exprimiendo el CPU, en comparación a por ejemplo el Empirical Roofline Toolkit.
+
+#### Por qué la versión optimizada hace menos GFLOP?
 La hipótesis que queda a validar es que se hacen menos GFLOP por que el compilador está vectorizando las operaciones de punto flotante.
 Con lo cuál realiza menos GFLOP en total.
 
@@ -37,11 +40,18 @@ Con lo cuál realiza menos GFLOP en total.
 |-O0|0|
 |-O3 -march=haswell| 131|
 
+
+### Celdas por segundo
+La cantidad de celdas de la matriz procesadas por segundo debería ser una métrica que cumple:
+ - Comparable para cualquier tamaño del problema.
+ - Mejor performance para mayores valores.
+
 ## FAQ
 ### Cómo calculamos GFLOP?
 `GFLOPS = (µops ejecutadas en puerto 0 y puerto 1) / segundos`
 Más detalle en ['haswell-looking-for-gflop']('../haswell-looking-for-gflop')
 
 ## Conclusiones
-- GFLOPS no es fiable ya que: dado un tamaño de problema N, la cantidad de operaciones punto flotante para resolver headless *no* es fija.
-- La única métrica fiable es comparar wall-time sobre la misma máquina y el mismo tamaño de problema.
+- GFLOPS no es fiable para comparar la performance de dos ejecutables ya que: dado un tamaño de problema N, la cantidad de operaciones punto flotante para resolver headless *no* es fija.
+- GFLOPS puede servir para saber cuánto margen tenemos para optimizar el uso del CPU, en comparación con un test como Empirical Roofline Toolkit.
+- Celdas por segundo: `N^2/segundos` debería ser una métrica útil para comparar la performance de dos ejecutables en la misma arquitectura. A validar.
