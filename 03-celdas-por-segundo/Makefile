@@ -12,7 +12,7 @@ navier-stokes:
 
 navier-stokes-optimized: navier-stokes
 	cp -r navier-stokes $@ && cd $@ && \
-	make clean && CC=$(CC) CEXTRAFLAGS="-O3 -march=haswell" make headless
+	make clean && CC=$(CC) CEXTRAFLAGS="-O3 -march=native" make headless
 
 navier-stokes-not-optimized: navier-stokes
 	cp -r navier-stokes $@ && cd $@ && \

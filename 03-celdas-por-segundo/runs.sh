@@ -1,7 +1,7 @@
 #! /bin/bash
 set -e
 mkdir -p $RESULTS_DIR
-echo "version, n, segundos, celdas/s" > ${RESULTS_DIR}/stats.csv
+echo "version, n, celdas/s en c/paso" > ${RESULTS_DIR}/stats.csv
 for n in $NS; do
     for version in $VERSIONS; do
         cd navier-stokes-$version
