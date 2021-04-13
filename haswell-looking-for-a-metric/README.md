@@ -8,20 +8,34 @@ cd navier-stokes-experiments/haswell-looking-for-a-metric
 make
 ```
 
-## En que consiste
+## Desarrollo
+Idea: Si utilizamos gflops como métrica de perfomance. Podemos penalizar más a un programa que tenga menos operaciones por segundo, pero dure menos tiempo de pared por que resuelve el problema en menos operaciones.
 
-Usamos `perf stat` sobre una arquitectura Haswell.
-con `perf stat -d -d` obtenemos métricas standar de performance,
-y con `perf stat -e r<codigo>` obtenemeos métricas específicas del PMU de Haswell.
-| Codigo | Descripción |
-|--------|-------------|
-| 5301a1 | µops ejecutadas en el puerto 0 de Haswell. Que incluye: FP FMA, FP MUL, FP DIV |
-| 5302a1 | µops ejecutadas en el puerto 1 de Haswell. Que incluye: FP FMA, FP MUL, FP ADD | 
-| 5304a1 | µops ejecutadas en el puerto 2 de Haswell. Que incluye: load data | 
-| 5308a1 | µops ejecutadas en el puerto 3 de Haswell. Que incluye: load data | 
-| 5310a1 | µops ejecutadas en el puerto 4 de Haswell. Que incluye: store data |
+Hipotesis H0: Dado un tamaño de problema N, la cantidad de operaciones punto flotante para resolver headless es fija.
 
-Estos códigos fueron obtenidos siguiendo la [guía](https://cs.famaf.unc.edu.ar/~nicolasw/Docencia/CP/2021/instructivo_flops.html) los compañeros de la materia Bordon, Mauro y Garagiola, Nazareno
+De ser verdadera, es justo comparar la performance mediante GFLOPS, ya que
+mayor GFLOPS implica menor wall time.
+De ser falsa, es injusto comparar la performance mediante GFLOPS, ya que
+mayor GFLOPS no implica menor wall time.
 
-## Que resultados se obtuvieron
-TODO
+Como contra ejemplo a la hipótesis, probamos ejecutando headless para N=128, con -O3 -march=haswell vs -O0. Obteniendo los siguientes resultados:
+|compilation|GFLOPS|Time(sec)|
+|-O3 -march=haswell|2.38|2.48
+|-O0 |0.95|1.67
+
+|Compilation|GFLOP|GFLOPS|Time(Sec)|
+|-----------|-----|------|---------|
+|-O0|90.32|2.21|40.82|
+|-O3 -march=haswell|26.22|0.88|29.80|
+
+HO es Falsa, la versión optimizada hace tres veces menos GFLOPS que la no optimizada.
+Además resulta que la optimizada tarda 11 segundos menos.
+
+## FAQ
+# Cómo calculamos GFLOP?
+`GFLOPS = (µops ejecutadas en puerto 0 y puerto 1) / segundos`
+Más detalle en ['haswell-looking-for-gflop']('../haswell-looking-for-gflop')
+
+## Conclusiones
+- GFLOPS no es fiable ya que: dado un tamaño de problema N, la cantidad de operaciones punto flotante para resolver headless *no* es fija.
+- La única métrica fiable es comparar wall-time sobre la misma máquina y el mismo tamaño de problema.
