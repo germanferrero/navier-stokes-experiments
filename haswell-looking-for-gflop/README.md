@@ -44,6 +44,8 @@ Ponemos a prueba esa métrica para ver que cumpla con lo siguiente:
 |128 | 28.29 | 0.85|
 |256 | 114.17 | 0.81|
 
+En los resultados podemos ver como las GFLOP crecen de manera cuadrática y las GFLOPS permanecen estables.
+
 ## Conclusiones
 - Aunque calcular GFLOPS de manera precisa no es fácil de lograr, y menos en Haswell. Tomamos:
 `GFLOPS = (µops ejecutadas en puerto 0 y puerto 1) / segundos`
