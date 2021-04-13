@@ -51,5 +51,5 @@ En los resultados podemos ver como las GFLOP crecen de manera cuadrática y las 
 `GFLOPS = (µops ejecutadas en puerto 0 y puerto 1) / segundos`
 como una aproximación válida.
 - Cumple con la propiedades deseadas:
- - si el tamaño del problema se duplica los GFLOP se cuadriplican.
- - los GFLOPS se mantienen constantes para distintos tamaños de problema.
+    - si el tamaño del problema se duplica los GFLOP se cuadriplican.
+    - los GFLOPS se mantienen constantes para distintos tamaños de problema.
