@@ -2,9 +2,9 @@ SHELL:=/bin/bash
 PERF_CODES=-e r5301a1 -e r5302a1
 UBUNTU_RELEASE=$(lsb_release -cs)
 RESULTS_DIR=$(PWD)/results
-NS:=32 64 128 256
+NS:=32 64
 COMPILERS:=gcc-8 gcc-9 gcc-10 clang-10 clang-11 clang-12
-all: gflops.csv
+all: $(RESULTS_DIR)/gflops.csv
 
 navier-stokes:
 	git clone https://github.com/germanferrero/navier-stokes.git && \
