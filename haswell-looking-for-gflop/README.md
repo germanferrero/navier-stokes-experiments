@@ -36,11 +36,13 @@ Ponemos a prueba esa métrica para ver que cumpla con lo siguiente:
  - Como consecuencia, puesto que el tiempo de ejecución también se cuadriplica, los GFLOPS se mantienen constantes para distintos tamaños de problema.
 
 *Resultados*
-n | GFLOP | GFLOPS
-32 | 1.75 | 0.99
-64 | 7.07 | 0.91
-128 | 28.29 | 0.85
-256 | 114.17 | 0.81
+
+|n | GFLOP | GFLOPS|
+|--|-------|-------|
+|32 | 1.75 | 0.99|
+|64 | 7.07 | 0.91|
+|128 | 28.29 | 0.85|
+|256 | 114.17 | 0.81|
 
 ## Conclusiones
 - Aunque calcular GFLOPS de manera precisa no es fácil de lograr, y menos en Haswell. Tomamos:
