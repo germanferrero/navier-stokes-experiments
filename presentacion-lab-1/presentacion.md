@@ -10,8 +10,10 @@
 1.  Caracterízticas de Hardware y Software
 2.  Calculando GFLOPS
 3.  Celdas por Segundo, la métrica.
-4.  Optimización: Loop-Carried Dependency.
-5.  Otros flags de compilación.
+4.  Optimización:
+    - Indices
+    - Distributiva
+    - Loop-Carried Dependency.
 
 ---
 
@@ -26,6 +28,8 @@
 - RAM:
     - 2 x SO-DIMM 4096 MB 1600 MT/s 
     - Roofline: DRAM: 18.0 GB/s
+
+- Kernel de Linux: 5.4.0-71-generic
 
 ---
 
@@ -124,17 +128,16 @@ Definimos
 
 ---
 
-# 4. Optimización: Loop-Carried Dependency
+# 4. Optimizaciones
 
-- el 93% del tiempo se la pasa en lin_solve
+- el 93% del tiempo se la pasa en lin_solve, hay que optimizar ahí
 <figure>
     <img src=https://i.imgur.com/TQ6GFyK.png />
     <figcaption>Fig 3: Perf report, la pulpa está en lin_solve </figcaption>
 </figure>
 
 ---
-
-# 4. Optimización: Loop-Carried Dependency
+# 4. Optimizaciones:
 
     !c
     static void lin_solve(unsigned int n, boundary b, 
@@ -159,14 +162,73 @@ Definimos
     }
 
 ---
+# 4. Optimizaciones: Indices - Cache Lines
+
+Cambiar
+
+    !c
+    #define IX(i, j) ((i) + (n + 2) * (j))
+
+Por
+
+    !c
+    #define IX(i, j) ((j) + (n + 2) * (i))
+
+- Esto resulta en una mejoría notoria para N >=1024
+
+---
 # 4. Optimización: Loop-Carried Dependency
 
 <img src='./assets/data-dependency.png' width="100%">
 
+Motivación: [A whirlwind introduction to dataflow graphs]("https://fgiesen.wordpress.com/2018/03/05/a-whirlwind-introduction-to-dataflow-graphs/")
 
 ---
 
 # 4. Optimización: Loop-Carried Dependency
+$(a * (North + South + East + West) + Previous) / c$
+==
+$(a * North + a * South + a * East + a * West + Previous) / c$
+==
+$ a/c * North + a/c * South + a/c * East + a/c * West + Previous/c $
+
+---
+# 4. Optimización: Loop-Carried Dependency
+
+    !c
+    static void lin_solve(unsigned int n, boundary b, float* x, const float* x0, float* t_sed, float* t_abw, float a, float c)
+    {
+    float ac = a / c;
+    for (unsigned int k = 0; k < 20; k++) {
+        // Sum up South East diagonals
+        for (unsigned int i = 1; i<=n; i++) {
+            for (unsigned int j=1; j<=n; j++) {
+                t_sed[IX(i,j)] = (x[IX(i+1, j)] + x[IX(i, j + 1)]) * ac;
+            }
+        }
+        // Sum up All But West for first row
+        for (unsigned int j = 1; j <= n; j++) {
+            t_abw[j] = x[IX(0,j)] * ac + t_sed[IX(1, j)];
+        }
+
+        for (unsigned int i = 1; i <= n; i++) {
+            for (unsigned int j = 1; j <= n; j++) {
+                float t_abw_ac = t_abw[j];
+                float anterior_c = x0[IX(i,j)] / c;
+                float independent = anterior_c + t_abw_ac;
+                float west_ac = x[IX(i, j - 1)] * ac;
+                x[IX(i, j)] =  independent + west_ac;
+                // Sum up All But West for next row
+                t_abw[j] = x[IX(i,j)] * ac + t_sed[IX(i + 1, j)];
+            }
+        }
+        set_bnd(n, b, x);
+    }
+}
+
+---
+
+# 4. Optimización: Solo distribuir
 
     !c
     static void lin_solve(unsigned int n, boundary b, float* x, const float* x0, float a, float c)
@@ -175,27 +237,26 @@ Definimos
         for (unsigned int k = 0; k < 20; k++) {
             for (unsigned int i = 1; i <= n; i++) {
                 for (unsigned int j = 1; j <= n; j++) {
-                    float diagonal_SO = x[IX(i + 1, j)] + x[IX(i, j + 1)];
-                    float diagonal_SO_ac = diagonal_SO * ac;
-                    float diagonal_NE = x[IX(i - 1, j)] + x[IX(i, j - 1)];
-                    float diagonal_NE_ac = diagonal_NE * ac;
-                    float anterior_c = x0[IX(i,j)] / c;
-                    x[IX(i, j)] = anterior_c + diagonal_SO_ac + diagonal_NE_ac;
+                    x[IX(i, j)] = (
+                        x0[IX(i, j)] / c +
+                        x[IX(i - 1, j)] * ac +
+                        x[IX(i + 1, j)] * ac +
+                        x[IX(i, j - 1)] * ac +
+                        x[IX(i, j + 1)]
+                    );
                 }
             }
             set_bnd(n, b, x);
         }
     }
+---
+# 4. Optimización: Loop-Carried Dependency
+
+<figure>
+    <img src="./assets/comparison_cells_per_s.png">
+    <figcaption>Fig 4: Cells per second vs N</figcaption>
+</figure>
 
 ---
 
-# 4. Optimización: Loop-Carried Dependency
-
-|version| n| Cells/sec (1e6)|
-|-------|---|------------------------|
-|original | 64| 1.152|
-|modificada | 64| 1.680|
-|original | 128| 1.109|
-|modificada | 128| 1.686|
-|original| 256| 1.070|
-|modificada | 256| 1.617|
+# Eso es todo
