@@ -29,17 +29,23 @@ Como contra ejemplo a la hipótesis, probamos ejecutando headless para N=128, co
 HO es Falsa, la versión optimizada hace tres veces menos GFLOP que la no optimizada.
 Además resulta que la optimizada tarda 11 segundos menos.
 
-Entonces GFLOPS no sirve para comparar 2 soluciones entre sí. Pero puede darnos una idea de cuánto se está exprimiendo el CPU, en comparación a por ejemplo el Empirical Roofline Toolkit.
-
+Entonces GFLOPS no sirve para comparar 2 soluciones entre sí?
+Bueno, veamos por qué la versión optimizada da menos GFLOP.
 #### Por qué la versión optimizada hace menos GFLOP?
-La hipótesis que queda a validar es que se hacen menos GFLOP por que el compilador está vectorizando las operaciones de punto flotante.
-Con lo cuál realiza menos GFLOP en total.
+Cuando observamos el código assembly generado por la versión optimizada notamos que el compilador ya está vectorizando, por la presencia de instrucciones AVX.
 
 |Compilación|Cantidad de operacions vmulss (AVX) en el assembly|
 |-----------|-----------------------------------|
 |-O0|0|
 |-O3 -march=haswell| 131|
 
+Y cómo estámos contabilizando las operaciones vectoriales? Como un solo FLOP o como la cantidad de operaciones de números flotantes de precisión simple que se paralelizan?
+
+En este caso pareciera que la forma de computar GFLOP está contabilizando cada operación vectorial como 1 FLOP, resultando en una cantidad total de FLOP menor.
+
+Para poder utilizar GFLOPs como métrica de comparación de dos soluciones, donde hay vectorización, nuestro cómputo de GFLOP debiera ser vectorization-aware.
+
+Pero puede darnos una idea de cuánto se está exprimiendo el CPU, en comparación a por ejemplo el Empirical Roofline Toolkit.
 
 ### Celdas por segundo
 La cantidad de celdas de la matriz procesadas por segundo debería ser una métrica que cumple:
