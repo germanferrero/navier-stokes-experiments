@@ -2,7 +2,7 @@ SHELL:=/bin/bash
 UBUNTU_RELEASE=$(lsb_release -cs)
 RESULTS_DIR=$(PWD)/results
 NS:=64 128 256 512
-COMPILERS:=gcc-8 gcc-9 gcc-10 clang-10 clang-11 clang-12
+COMPILERS:= baseline gcc-8 gcc-9 gcc-10 clang-10 clang-11 clang-12
 all: $(RESULTS_DIR)/stats.png
 
 navier-stokes:
@@ -12,7 +12,13 @@ navier-stokes:
 
 navier-stokes-%: navier-stokes
 	cp -r navier-stokes navier-stokes-$* && cd $@ && \
-	make clean && CC="$*" CEXTRAFLAGS="-O3 -march=native" make headless
+	sed -i s/CC=gcc/CC=$*/ Makefile && \
+	make clean && CEXTRAFLAGS="-O3 -march=native" make headless
+
+navier-stokes-baseline: navier-stokes
+	cp -r navier-stokes navier-stokes-baseline && cd $@ && \
+	sed -i s/CC=gcc/CC=gcc-8/ Makefile && \
+	make clean && CEXTRAFLAGS="-O1" make headless
 
 $(RESULTS_DIR)/stats.csv: $(foreach compiler,$(COMPILERS), navier-stokes-$(compiler))
 	COMPILERS="$(COMPILERS)" \

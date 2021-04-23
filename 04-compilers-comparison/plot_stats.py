@@ -41,6 +41,7 @@ def main():
     ax.set_xticks(list(ns))
     ax.set_xlabel('N')
     ax.set_ylabel('Celdas/s (1e6)')
+    ax.set_title('Comparación de Celdas/s entre compiladores')
     fig.savefig(sys.argv[2])
 
 if __name__ == '__main__':
