@@ -10,17 +10,17 @@ all: $(PARALLEL_RESULTS_DIR)/stats.csv $(SEQ_RESULTS_DIR)/stats.csv
 
 navier-stokes-lab2:
 	git clone https://github.com/germanferrero/navier-stokes.git $@ && \
-	cd $@ && git checkout -q 1f9d4c8c87def959d6cf80d6a21e5f154529c2dd && \
+	cd $@ && git checkout -q d4e200efcdc6e900057a348753f145e4553fd454 && \
 	make clean && CEXTRAFLAGS="-O3 -march=native -ffast-math" make headless
 
 navier-stokes-redblack-vec:
 	git clone https://github.com/germanferrero/navier-stokes.git $@ && \
-	cd $@ && git checkout -q e8b8772440a13dba8fc6f2af8105b27a163fcf52 && \
+	cd $@ && git checkout -q a2d230bd724764f20a08903a20f89a980e99af0f && \
 	make clean && CEXTRAFLAGS="-O1 -march=native -ffast-math -ftree-vectorize" make headless
 
 navier-stokes-redblack-omp:
 	git clone https://github.com/germanferrero/navier-stokes.git $@ && \
-	cd $@ && git checkout -q 9c0e4d8d498f0ccfe7e7a32cfe3dc3d483876d80 && \
+	cd $@ && git checkout -q 8383fe0d95093e4a736991e014921b95338de9f2 && \
 	make clean && CEXTRAFLAGS="-O1 -march=native -ffast-math -ftree-vectorize -fopenmp" make headless
 
 $(SEQ_RESULTS_DIR)/stats.csv: $(foreach version,$(VERSIONS), navier-stokes-$(version))
