@@ -5,8 +5,8 @@ PARALLEL_RESULTS_DIR=$(PWD)/parallel_results
 NS:=128 256 512 1024 2048 4096 8192
 MAX_THREADS:=20
 VERSIONS:=lab2 redblack-vec
-VERSIONS_PARALLELLS:=redblack-omp
-all: $(PARALLEL_RESULTS_DIR)/stats.csv $(SEQ_RESULTS_DIR)/stats.csv
+VERSIONS_PARALLELLS:=redblack-omp-only-linsolve
+all: $(PARALLEL_RESULTS_DIR)/stats.csv
 
 navier-stokes-lab2:
 	git clone https://github.com/germanferrero/navier-stokes.git $@ && \
@@ -17,6 +17,12 @@ navier-stokes-redblack-vec:
 	git clone https://github.com/germanferrero/navier-stokes.git $@ && \
 	cd $@ && git checkout -q a2d230bd724764f20a08903a20f89a980e99af0f && \
 	make clean && CEXTRAFLAGS="-O1 -march=native -ffast-math -ftree-vectorize" make headless
+
+navier-stokes-redblack-omp-only-linsolve:
+	git clone https://github.com/germanferrero/navier-stokes.git $@ && \
+	cd $@ && git checkout -q 4e3f64287d69ea9c8131a7c5c0ea8d0bfa3d54c6 && \
+	make clean && CEXTRAFLAGS="-O1 -march=native -ffast-math -ftree-vectorize -fopenmp" make headless
+
 
 navier-stokes-redblack-omp:
 	git clone https://github.com/germanferrero/navier-stokes.git $@ && \
