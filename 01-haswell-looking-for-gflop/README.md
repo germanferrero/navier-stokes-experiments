@@ -1,4 +1,4 @@
-# Haswell Buscando una metrica
+# Calculando GFLOPS en Haswell
 En este experimento buscamos una forma de calcular GFLOP (Giga operaciones de punto flotante) en la arquitectura de haswell.
 
 ## Como correrlo
