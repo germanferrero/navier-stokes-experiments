@@ -27,3 +27,5 @@ Luego podemos ver como just-distribute da una ganancia de 1.15x respecto a fix-i
 Mientras que la optimización de Independent Uops First representa una mejora de ~1.4x respecto a fix-index para N desde 1024 a 4096 al menos.
 
 En siguientes iteraciones buscaremos librarnos definitivamente de la Loop Carried Dependency.
+
+[EDIT 29/06/2021: Efectivamente, como comentaba Charly Bederián, la performance de la versión independent-uops-first se debe a que el compilador autovectoriza esa parte del cálculo :)]
