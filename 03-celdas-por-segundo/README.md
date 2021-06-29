@@ -1,5 +1,5 @@
 # Haswell Buscando una metrica
-En este experimento buscamos una validar que la métrica cantidad de celdas
+En este experimento buscamos validar que la métrica cantidad de celdas
 procesadas por segundo en cada paso (`one_step`) es una métrica para comparar performance de [navier stokes](https://github.com/germanferrero/navier-stokes) que cumple con:
 - Es comparable para cualquier tamaño del problema.
 - Mejor performance para mayores valores.
