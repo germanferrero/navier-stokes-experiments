@@ -32,6 +32,9 @@ Además resulta que la optimizada tarda 11 segundos menos.
 Entonces GFLOPS no sirve para comparar 2 soluciones entre sí?
 Bueno, veamos por qué la versión optimizada da menos GFLOP.
 #### Por qué la versión optimizada hace menos GFLOP?
+
+[EDIT 29/06/2021: Lo siguiente es incorrecto, vmulss no es una instrucción vectorial. No lo sabía en su momento]
+
 Cuando observamos el código assembly generado por la versión optimizada notamos que el compilador ya está vectorizando, por la presencia de instrucciones AVX.
 
 |Compilación|Cantidad de operacions vmulss (AVX) en el assembly|
