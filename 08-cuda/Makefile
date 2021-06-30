@@ -31,9 +31,6 @@ $(PARALLEL_RESULTS_DIR)/stats.csv: $(foreach version,$(VERSIONS_PARALLELLS), nav
 	MAX_THREADS=$(MAX_THREADS) \
 	./run_parallel.sh
 
-# $(RESULTS_DIR)/stats.png: $(RESULTS_DIR)/stats.csv
-# 	python plot_stats.py $< $@
-
 clean:
 	rm -rf $(SEQ_RESULTS_DIR) $(PARALLEL_RESULTS_DIR) navier-stokes*
 
