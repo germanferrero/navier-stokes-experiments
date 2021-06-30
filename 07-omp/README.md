@@ -102,3 +102,14 @@ En el eje de las x está el tamaño del problema y en el eje de las y está el r
     <figcaption>Fig 4: Mejor performance por cada N </figcaption>
 </figure>
 
+
+Para visualizar lo lejos que estamos de roofline, corrimos con 20 Threads para N=4096 y obtuvimos:
+
+<figure>
+    <img src='./assets/roofline.png' height="500px">
+    <figcaption>Fig 5: Roofline </figcaption>
+</figure>
+
+Estamos 1477 veces por debajo del Roofline para esta intensidad aritmética. Con lo cuál nuestra implementación tiene muchísimo espacio de mejora.
+Sobre todo en aprovechar mejor las líneas de caché haciendo blocking para recorrer la matriz en vez de hacerlo fila a fila.
+Lo cuál atacaremos para la implementación en CUDA.
