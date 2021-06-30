@@ -14,7 +14,10 @@ make
 ## Disposición de celdas en memoria
 Seguimos la lógica graficada en esta imagen para determinar la dirección de memoria de cada celda:
 
-[INSERTAR IMAGEN]
+<figure>
+    <img src='./assets/disposicion-en-memoria.png' height="500px">
+    <figcaption>Fig 1: Disposición en Memoria</figcaption>
+</figure>
 
 Reordenando las celdas en memoria siguiendo 
 ```
@@ -58,12 +61,9 @@ Luego de esta última modificación, el mayor tiempo de ejecución volvió a est
 ## Resultados
 
 <figure>
-    <img src="./assets/stats.png">
+    <img src="./assets/resultados.png">
     <figcaption>Fig 4: Cells per second vs N</figcaption>
 </figure>
 
-En los resultados podemos ver como la optimización fix-index es importantísima para garantizar un buen acceso a memoria a partir de N >= 1024. Sin esa optimización, nos chocamos fuerte con el Memory Wall.
-Luego podemos ver como just-distribute da una ganancia de 1.15x respecto a fix-index para N desde 1024 a 4096 al menos.
-Mientras que la optimización de Independent Uops First representa una mejora de ~1.4x respecto a fix-index para N desde 1024 a 4096 al menos.
-
-En siguientes iteraciones buscaremos librarnos definitivamente de la Loop Carried Dependency.
+En los resultados podemos ver que la versión que vectoriza el cálculo
+de lin_solve para cada diagonal es 2.7x veces más rápida que la mejor versión obtenida en el lab1, que solo vectorizaba una cantidad menor de operaciones.
